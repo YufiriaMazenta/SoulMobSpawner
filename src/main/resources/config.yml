@@ -1,0 +1,5 @@
+soul_fragments:
+  drop_settings:
+    default:
+      probability: 0.05
+      name: '<entity_name>的灵魂碎片'
