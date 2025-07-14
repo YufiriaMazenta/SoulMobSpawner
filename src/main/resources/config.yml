@@ -1,5 +1,12 @@
-soul_fragments:
+soul_fragment_settings:
   drop_settings:
-    default:
+    'minecraft:zombie':
       probability: 0.05
-      name: '<entity_name>的灵魂碎片'
+      item:
+        material: 'minecraft:paper'
+        name: '&3僵尸的灵魂碎片'
+        lore:
+          - '&7'
+          - '&7僵尸的灵魂碎片'
+          - '&7可用于合成僵尸刷怪笼'
+        custom_model_data: 10001
