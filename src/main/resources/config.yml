@@ -1,6 +1,6 @@
 soul_fragment_settings:
   drop_settings:
-    'minecraft:zombie':
+    ZOMBIE:
       probability: 0.05
       item:
         material: 'minecraft:paper'
@@ -10,3 +10,6 @@ soul_fragment_settings:
           - '&7僵尸的灵魂碎片'
           - '&7可用于合成僵尸刷怪笼'
         custom_model_data: 10001
+mob_spawner_settings:
+  ZOMBIE:
+    max_durability: 100

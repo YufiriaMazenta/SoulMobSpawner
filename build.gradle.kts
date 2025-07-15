@@ -13,12 +13,15 @@ repositories {
     mavenLocal()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.crypticlib.com:8081/repository/maven-public/")
+    //MythicMobs
+    maven("https://mvn.lumine.io/repository/maven-public/")
     mavenCentral()
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("org.jetbrains:annotations:24.0.1")
+    compileOnly("io.lumine:Mythic-Dist:5.9.1")
     implementation("com.crypticlib:bukkit:${rootProject.findProperty("crypticlibVersion")}")
 }
 
