@@ -1,11 +1,9 @@
 package pers.yufiria.soulmobspawner;
 
+import com.github.yufiriamazenta.craftorithm.item.ItemManager;
 import crypticlib.BukkitPlugin;
-import crypticlib.listener.EventListener;
 import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import pers.yufiria.soulmobspawner.hook.CraftorithmItemProvider;
 
 public class SoulMobSpawner extends BukkitPlugin {
 
@@ -15,4 +13,10 @@ public class SoulMobSpawner extends BukkitPlugin {
         INSTANCE = this;
     }
 
+    @Override
+    public void enable() {
+        if (Bukkit.getPluginManager().isPluginEnabled("Craftorithm")) {
+            ItemManager.INSTANCE.regItemProvider(CraftorithmItemProvider.INSTANCE);
+        }
+    }
 }

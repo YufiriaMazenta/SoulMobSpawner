@@ -8,5 +8,6 @@ import crypticlib.config.node.impl.bukkit.ConfigSectionConfig;
 public class Configs {
 
     public static final ConfigSectionConfig SOUL_FRAGMENT_SETTINGS = new ConfigSectionConfig("soul_fragment_settings");
+    public static final ConfigSectionConfig MOB_SPAWNER_SETTINGS = new ConfigSectionConfig("mob_spawner_settings");
 
 }

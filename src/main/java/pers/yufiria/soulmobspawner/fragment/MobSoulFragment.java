@@ -13,7 +13,7 @@ public record MobSoulFragment(
         EntityType mobType = EntityType.valueOf(mobTypeStr.toUpperCase());
         double probability = config.getDouble("probability");
         ConfigurationSection itemConfig = config.getConfigurationSection("item");
-        MobSoulFragmentItem item = MobSoulFragmentItem.fromConfig(itemConfig);
+        MobSoulFragmentItem item = MobSoulFragmentItem.fromConfig(mobType, itemConfig);
         return new MobSoulFragment(mobType, probability, item);
     }
 

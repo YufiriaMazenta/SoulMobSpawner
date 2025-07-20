@@ -20,6 +20,7 @@ import pers.yufiria.soulmobspawner.config.Configs;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @AutoTask(
@@ -69,6 +70,13 @@ public enum MobSoulFragmentsHandler implements Listener, BukkitLifeCycleTask {
                 throwable.printStackTrace();
             }
         }
+    }
+
+    public Optional<MobSoulFragment> getMobFragment(EntityType entityType) {
+        if (entityType == null) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(mobSoulFragmentsMap.get(entityType));
     }
 
     public @Unmodifiable Map<EntityType, MobSoulFragment> mobSoulFragments() {

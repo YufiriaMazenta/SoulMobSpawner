@@ -3,21 +3,27 @@ package pers.yufiria.soulmobspawner.fragment;
 import crypticlib.util.MaterialHelper;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pers.yufiria.soulmobspawner.SoulMobSpawner;
 
 import java.util.List;
 import java.util.Objects;
 
 public record MobSoulFragmentItem(
+    @NotNull EntityType entityType,
     @NotNull Material material,
     @Nullable String name,
     @NotNull List<String> lore,
     @Nullable Integer customModelData,
     @Nullable NamespacedKey itemModel
 ) {
+
+    public static final NamespacedKey MOB_SOUL_FRAGMENT_ITEM_ID_KEY = new NamespacedKey(SoulMobSpawner.INSTANCE, "soul_fragment_id");
 
     public ItemStack toItem() {
         ItemStack item = new ItemStack(material);
@@ -28,11 +34,12 @@ public record MobSoulFragmentItem(
         meta.setCustomModelData(customModelData);
 
         meta.setItemModel(itemModel);
+        meta.getPersistentDataContainer().set(MOB_SOUL_FRAGMENT_ITEM_ID_KEY, PersistentDataType.STRING, entityType.name());
         item.setItemMeta(meta);
         return item;
     }
 
-    public static MobSoulFragmentItem fromConfig(ConfigurationSection config) throws NullPointerException {
+    public static MobSoulFragmentItem fromConfig(EntityType entityType, ConfigurationSection config) throws NullPointerException {
         if (config == null)
             return null;
         Material material = MaterialHelper.matchMaterial(config.getString("material", "minecraft:stone"));
@@ -45,7 +52,7 @@ public record MobSoulFragmentItem(
         } else {
             itemModel = null;
         }
-        return new MobSoulFragmentItem(Objects.requireNonNull(material), name, lore, customModelData, itemModel);
+        return new MobSoulFragmentItem(entityType, Objects.requireNonNull(material), name, lore, customModelData, itemModel);
     }
 
 }
