@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public enum MobSoulFragmentsHandler implements Listener, BukkitLifeCycleTask {
 
     INSTANCE;
-    private final Map<EntityType, MobSoulFragment> mobSoulFragmentsMap = new ConcurrentHashMap<>();
+    private final Map<EntityType, MobSoulFragmentSetting> mobSoulFragmentsMap = new ConcurrentHashMap<>();
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDeath(EntityDeathEvent event) {
@@ -49,11 +49,11 @@ public enum MobSoulFragmentsHandler implements Listener, BukkitLifeCycleTask {
         if (!mobSoulFragmentsMap.containsKey(mobType)) {
             return;
         }
-        MobSoulFragment mobSoulFragment = mobSoulFragmentsMap.get(mobType);
+        MobSoulFragmentSetting mobSoulFragmentSetting = mobSoulFragmentsMap.get(mobType);
         double randomNum = Math.random();
-        if (randomNum < mobSoulFragment.probability()) {
+        if (randomNum < mobSoulFragmentSetting.probability()) {
             //概率符合,掉落
-            event.getDrops().add(mobSoulFragment.item().toItem());
+            event.getDrops().add(mobSoulFragmentSetting.item().toItem());
         }
     }
 
@@ -64,7 +64,7 @@ public enum MobSoulFragmentsHandler implements Listener, BukkitLifeCycleTask {
         for (String key : soulFragmentConfigs.getKeys(false)) {
             ConfigurationSection soulFragmentConfig = soulFragmentConfigs.getConfigurationSection(key);
             try {
-                MobSoulFragment fragment = MobSoulFragment.fromConfig(key, Objects.requireNonNull(soulFragmentConfig));
+                MobSoulFragmentSetting fragment = MobSoulFragmentSetting.fromConfig(key, Objects.requireNonNull(soulFragmentConfig));
                 mobSoulFragmentsMap.put(fragment.mobType(), fragment);
             } catch (Throwable throwable) {
                 throwable.printStackTrace();
@@ -72,14 +72,14 @@ public enum MobSoulFragmentsHandler implements Listener, BukkitLifeCycleTask {
         }
     }
 
-    public Optional<MobSoulFragment> getMobFragment(EntityType entityType) {
+    public Optional<MobSoulFragmentSetting> getMobFragment(EntityType entityType) {
         if (entityType == null) {
             return Optional.empty();
         }
         return Optional.ofNullable(mobSoulFragmentsMap.get(entityType));
     }
 
-    public @Unmodifiable Map<EntityType, MobSoulFragment> mobSoulFragments() {
+    public @Unmodifiable Map<EntityType, MobSoulFragmentSetting> mobSoulFragments() {
         return Collections.unmodifiableMap(mobSoulFragmentsMap);
     }
 }

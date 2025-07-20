@@ -9,7 +9,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pers.yufiria.soulmobspawner.fragment.MobSoulFragment;
+import pers.yufiria.soulmobspawner.fragment.MobSoulFragmentSetting;
 import pers.yufiria.soulmobspawner.fragment.MobSoulFragmentItem;
 import pers.yufiria.soulmobspawner.fragment.MobSoulFragmentsHandler;
 
@@ -45,12 +45,12 @@ public enum CraftorithmItemProvider implements ItemProvider {
         switch (split[0]) {
             case "soul_fragment" -> {
                 EntityType entityType = EntityType.valueOf(split[1].toUpperCase());
-                Optional<MobSoulFragment> mobFragmentOpt = MobSoulFragmentsHandler.INSTANCE.getMobFragment(entityType);
+                Optional<MobSoulFragmentSetting> mobFragmentOpt = MobSoulFragmentsHandler.INSTANCE.getMobFragment(entityType);
                 if (mobFragmentOpt.isEmpty()) {
                     return null;
                 }
-                MobSoulFragment mobSoulFragment = mobFragmentOpt.get();
-                return mobSoulFragment.item().toItem();
+                MobSoulFragmentSetting mobSoulFragmentSetting = mobFragmentOpt.get();
+                return mobSoulFragmentSetting.item().toItem();
             }
         }
         return null;
