@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public enum MobSoulFragmentsHandler implements Listener, BukkitLifeCycleTask {
 
     INSTANCE;
-    private final Map<EntityType, MobSoulFragmentSetting> mobSoulFragmentsMap = new ConcurrentHashMap<>();
+    private final Map<EntityType, MobSoulFragmentSetting> mobSoulFragmentSettingsMap = new ConcurrentHashMap<>();
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDeath(EntityDeathEvent event) {
@@ -46,10 +46,10 @@ public enum MobSoulFragmentsHandler implements Listener, BukkitLifeCycleTask {
             return;
         }
         EntityType mobType = entity.getType();
-        if (!mobSoulFragmentsMap.containsKey(mobType)) {
+        if (!mobSoulFragmentSettingsMap.containsKey(mobType)) {
             return;
         }
-        MobSoulFragmentSetting mobSoulFragmentSetting = mobSoulFragmentsMap.get(mobType);
+        MobSoulFragmentSetting mobSoulFragmentSetting = mobSoulFragmentSettingsMap.get(mobType);
         double randomNum = Math.random();
         if (randomNum < mobSoulFragmentSetting.probability()) {
             //概率符合,掉落
@@ -59,13 +59,13 @@ public enum MobSoulFragmentsHandler implements Listener, BukkitLifeCycleTask {
 
     @Override
     public void lifecycle(Plugin plugin, LifeCycle lifeCycle) {
-        mobSoulFragmentsMap.clear();
+        mobSoulFragmentSettingsMap.clear();
         ConfigurationSection soulFragmentConfigs = Configs.SOUL_FRAGMENT_SETTINGS.value();
         for (String key : soulFragmentConfigs.getKeys(false)) {
             ConfigurationSection soulFragmentConfig = soulFragmentConfigs.getConfigurationSection(key);
             try {
                 MobSoulFragmentSetting fragment = MobSoulFragmentSetting.fromConfig(key, Objects.requireNonNull(soulFragmentConfig));
-                mobSoulFragmentsMap.put(fragment.mobType(), fragment);
+                mobSoulFragmentSettingsMap.put(fragment.mobType(), fragment);
             } catch (Throwable throwable) {
                 throwable.printStackTrace();
             }
@@ -76,10 +76,10 @@ public enum MobSoulFragmentsHandler implements Listener, BukkitLifeCycleTask {
         if (entityType == null) {
             return Optional.empty();
         }
-        return Optional.ofNullable(mobSoulFragmentsMap.get(entityType));
+        return Optional.ofNullable(mobSoulFragmentSettingsMap.get(entityType));
     }
 
     public @Unmodifiable Map<EntityType, MobSoulFragmentSetting> mobSoulFragments() {
-        return Collections.unmodifiableMap(mobSoulFragmentsMap);
+        return Collections.unmodifiableMap(mobSoulFragmentSettingsMap);
     }
 }

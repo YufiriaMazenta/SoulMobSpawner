@@ -1,5 +1,6 @@
 package pers.yufiria.soulmobspawner.spawner;
 
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,7 +14,6 @@ public record MobSpawnerSetting(
 ) {
 
     public static final NamespacedKey MOB_SPAWNER_ID_KEY = new NamespacedKey(SoulMobSpawner.INSTANCE, "mob_spawner_id");
-    public static final NamespacedKey MOB_SPAWNER_EXTRAS_KEY = new NamespacedKey(SoulMobSpawner.INSTANCE, "mob_spawner_extras");
 
     public static MobSpawnerSetting fromConfig(String mobTypeStr, ConfigurationSection config) {
         EntityType mobType = EntityType.valueOf(mobTypeStr.toUpperCase());
@@ -26,8 +26,8 @@ public record MobSpawnerSetting(
         return null;
     }
 
-    public void setSpawnerData(CreatureSpawner spawner) {
-        //TODO
+    public boolean placeSpawner(Location location) {
+
     }
 
 }
