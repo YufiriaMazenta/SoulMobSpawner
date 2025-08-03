@@ -13,3 +13,11 @@ soul_fragment_settings:
 mob_spawner_settings:
   ZOMBIE:
     max_durability: 100
+    item:
+      material: 'minecraft:paper'
+      name: '&3僵尸的灵魂碎片'
+      lore:
+        - '&7'
+        - '&7僵尸的灵魂碎片'
+        - '&7可用于合成僵尸刷怪笼'
+      custom_model_data: 10001

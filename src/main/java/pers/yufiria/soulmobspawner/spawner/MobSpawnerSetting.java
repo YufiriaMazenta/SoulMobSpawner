@@ -5,11 +5,15 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Mob;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import pers.yufiria.soulmobspawner.SoulMobSpawner;
 
 public record MobSpawnerSetting(
     EntityType mobType,
+    MobSpawnerItem spawnerItem,
     Integer maxDurability
 ) {
 
@@ -18,16 +22,14 @@ public record MobSpawnerSetting(
     public static MobSpawnerSetting fromConfig(String mobTypeStr, ConfigurationSection config) {
         EntityType mobType = EntityType.valueOf(mobTypeStr.toUpperCase());
         Integer maxDurability = config.getInt("max_durability");
-        return new MobSpawnerSetting(mobType, maxDurability);
+        ConfigurationSection itemConfig = config.getConfigurationSection("item");
+        MobSpawnerItem spawnerItem = MobSpawnerItem.fromConfig(mobType, itemConfig);
+        return new MobSpawnerSetting(mobType, spawnerItem, maxDurability);
     }
 
-    public ItemStack getSpawnerItem() {
-        //todo
-        return null;
-    }
-
-    public boolean placeSpawner(Location location) {
-
+    public boolean setToSpawner(CreatureSpawner spawner) {
+        MobSpawnerData mobSpawnerData = new MobSpawnerData(this, maxDurability);
+        return mobSpawnerData.setToSpawner(spawner);
     }
 
 }
