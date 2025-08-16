@@ -6,6 +6,7 @@ import crypticlib.lifecycle.LifeCycle;
 import crypticlib.lifecycle.TaskRule;
 import crypticlib.listener.EventListener;
 import io.lumine.mythic.bukkit.MythicBukkit;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -41,10 +42,13 @@ public enum MobSoulFragmentsHandler implements Listener, BukkitLifeCycleTask {
             return;
         }
         LivingEntity entity = event.getEntity();
-        if (MythicBukkit.inst().getMobManager().isMythicMob(entity)) {
-            //是mm怪物,不做处理,直接返回
-            return;
+        if (Bukkit.getPluginManager().isPluginEnabled("MythicMobs")) {
+            if (MythicBukkit.inst().getMobManager().isMythicMob(entity)) {
+                //是mm怪物,不做处理,直接返回
+                return;
+            }
         }
+
         EntityType mobType = entity.getType();
         if (!mobSoulFragmentSettingsMap.containsKey(mobType)) {
             return;

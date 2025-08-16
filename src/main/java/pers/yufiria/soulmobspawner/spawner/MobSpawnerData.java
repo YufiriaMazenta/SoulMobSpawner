@@ -1,5 +1,6 @@
 package pers.yufiria.soulmobspawner.spawner;
 
+import crypticlib.util.IOHelper;
 import crypticlib.util.ItemHelper;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -35,16 +36,14 @@ public class MobSpawnerData {
             return false;
         }
         PersistentDataContainer rootData = spawner.getPersistentDataContainer();
-        if (!rootData.has(MOB_SPAWNER_DATA_KEY)) {
-            return false;
-        }
         PersistentDataContainer spawnerData = rootData.getOrDefault(
             MOB_SPAWNER_DATA_KEY,
             PersistentDataType.TAG_CONTAINER,
             rootData.getAdapterContext().newPersistentDataContainer()
         );
-        spawnerData.set(MobSpawnerSetting.MOB_SPAWNER_ID_KEY, PersistentDataType.STRING, spawnerSetting.mobType().getKey().toString());
         spawnerData.set(MOB_SPAWNER_DURABILITY_KEY, PersistentDataType.INTEGER, durability);
+        rootData.set(MOB_SPAWNER_DATA_KEY, PersistentDataType.TAG_CONTAINER, spawnerData);
+        IOHelper.info("1");
         return true;
     }
 
@@ -69,15 +68,17 @@ public class MobSpawnerData {
             return null;
         }
 
-        NamespacedKey spawnerId = NamespacedKey.fromString(rootData.get(MobSpawnerSetting.MOB_SPAWNER_ID_KEY, PersistentDataType.STRING));
+        String mobTypeKeyStr = rootData.get(MobSpawnerSetting.MOB_SPAWNER_ID_KEY, PersistentDataType.STRING);
+        NamespacedKey spawnerId = NamespacedKey.fromString(mobTypeKeyStr);
         Optional<MobSpawnerSetting> mobSpawnerSettingOpt = MobSpawnerHandler.INSTANCE.getMobSpawner(Registry.ENTITY_TYPE.get(spawnerId));
         if (mobSpawnerSettingOpt.isEmpty()) {
             return null;
         }
         MobSpawnerSetting spawnerSetting = mobSpawnerSettingOpt.get();
-        PersistentDataContainer spawnerData = rootData.get(
+        PersistentDataContainer spawnerData = rootData.getOrDefault(
             MOB_SPAWNER_DATA_KEY,
-            PersistentDataType.TAG_CONTAINER
+            PersistentDataType.TAG_CONTAINER,
+            rootData.getAdapterContext().newPersistentDataContainer()
         );
         int durability = spawnerData.getOrDefault(MOB_SPAWNER_DURABILITY_KEY, PersistentDataType.INTEGER, spawnerSetting.maxDurability());
         return new MobSpawnerData(spawnerSetting, durability);

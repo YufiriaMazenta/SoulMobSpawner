@@ -1,12 +1,22 @@
 package pers.yufiria.soulmobspawner.spawner;
 
+import crypticlib.CrypticLib;
+import crypticlib.CrypticLibBukkit;
 import crypticlib.lifecycle.AutoTask;
 import crypticlib.lifecycle.BukkitLifeCycleTask;
 import crypticlib.lifecycle.LifeCycle;
 import crypticlib.lifecycle.TaskRule;
+import crypticlib.listener.EventListener;
+import crypticlib.util.IOHelper;
+import org.bukkit.Material;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Mob;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.SpawnerSpawnEvent;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Unmodifiable;
 import pers.yufiria.soulmobspawner.config.Configs;
@@ -22,10 +32,34 @@ import java.util.concurrent.ConcurrentHashMap;
         @TaskRule(lifeCycle = LifeCycle.RELOAD)
     }
 )
+@EventListener
 public enum MobSpawnerHandler implements BukkitLifeCycleTask, Listener {
 
     INSTANCE;
     private final Map<EntityType, MobSpawnerSetting> mobSpawnerSettingMap = new ConcurrentHashMap<>();
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onMobSpawn(SpawnerSpawnEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+        CreatureSpawner spawner = event.getSpawner();
+        MobSpawnerData spawnerData = MobSpawnerData.fromMobSpawner(spawner);
+        if (spawnerData == null) {
+            return;
+        }
+        int durability = spawnerData.durability() - 1;
+        if (durability <= 0) {
+            spawner.getBlock().breakNaturally();
+            event.getLocation().getBlock().setType(Material.AIR);
+            IOHelper.info("Mob spawner removed");
+            return;
+        }
+        spawnerData.setDurability(durability);
+        spawnerData.setToSpawner(spawner);
+        IOHelper.info("Mob spawner updated");
+        spawner.update(true, true);
+    }
 
     public Optional<MobSpawnerSetting> getMobSpawner(EntityType entityType) {
         return Optional.ofNullable(mobSpawnerSettingMap.get(entityType));
